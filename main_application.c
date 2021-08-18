@@ -508,37 +508,37 @@ static void Seg7_ispis_task(void* pvParameters) { // TASK ZA ISPIS NA SEG7 DISPL
 			printf("Problem\n");
 			}
 
-			if (set_7seg_digit(hexnum[(uint8_t)senzor1_local / 100]) != 0) {
+			if (set_7seg_digit(hexnum[(uint8_t)senzor1_local / (uint8_t)100]) != 0) {
 			printf("Problem\n");
 			}
 			if (select_7seg_digit(2) != 0) {
 			printf("Problem\n");
 			}
-			if (set_7seg_digit(hexnum[((uint8_t)senzor1_local / 10) % 10]) != 0) {
+			if (set_7seg_digit(hexnum[((uint8_t)senzor1_local / (uint8_t)10) % (uint8_t)10]) != 0) {
 			printf("Problem\n");
 			}
 			if (select_7seg_digit(3) != 0) {
 			printf("Problem\n");
 			}
-			if (set_7seg_digit(hexnum[(uint8_t)senzor1_local % 10]) != 0) {
+			if (set_7seg_digit(hexnum[(uint8_t)senzor1_local % (uint8_t)10]) != 0) {
 			printf("Problem\n");
 			}
 			if (select_7seg_digit(4) != 0) {
 				printf("Problem\n");
 			}
-			if (set_7seg_digit(hexnum[(uint8_t)senzor2_local / 100]) != 0) {
+			if (set_7seg_digit(hexnum[(uint8_t)senzor2_local / (uint8_t)100]) != 0) {
 			printf("Problem\n");
 			}
 			if (select_7seg_digit(5) != 0) {
 				printf("Problem\n");
 			}
-			if (set_7seg_digit(hexnum[((uint8_t)senzor2_local / 10) % 10]) != 0) {
+			if (set_7seg_digit(hexnum[((uint8_t)senzor2_local / (uint8_t)10) % (uint8_t)10]) != 0) {
 				printf("Problem\n");
 			}
 			if (select_7seg_digit(6) != 0) {
 				printf("Problem\n");
 			}
-			if (set_7seg_digit(hexnum[(uint8_t)senzor2_local % 10]) != 0) {
+			if (set_7seg_digit(hexnum[(uint8_t)senzor2_local % (uint8_t)10]) != 0) {
 			printf("Problem\n");
 			}
 
