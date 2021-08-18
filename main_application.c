@@ -477,15 +477,21 @@ static void Seg7_ispis_task(void* pvParameters) { // TASK ZA ISPIS NA SEG7 DISPL
 
 		// ceka semafor, osvezava se displej svakih 200ms
 
-		xQueueReceive(seg7_auto_queue, &start_local, pdMS_TO_TICKS(20));
+		if (xQueueReceive(seg7_auto_queue, &start_local, pdMS_TO_TICKS(20)) != pdTRUE) {
+			printf("seg7_1\n");
+		}
 		
 
 		// start/stop komanda se risivuje 
-		xQueueReceive(queue_senzor1, &senzor1_local, pdMS_TO_TICKS(20));
+		if (xQueueReceive(queue_senzor1, &senzor1_local, pdMS_TO_TICKS(20)) != pdTRUE) {
+			printf("seg7_2\n");
+		}
 
 
 		// vrednost sa senzora 1 se risivuje
-		xQueueReceive(queue_senzor2, &senzor2_local, pdMS_TO_TICKS(20));
+		if (xQueueReceive(queue_senzor2, &senzor2_local, pdMS_TO_TICKS(20)) != pdTRUE ) {
+			printf("seg7_3\n");
+		}
 
 
 		// vrednost sa senzora 2 se risivuje
