@@ -144,7 +144,9 @@ static void SerialSend_Task(const void* pvParameters)
 		//pogledaj ima li sta novo (ako nema za 10ms radi dalje)
 
 		if (t_point < duzina_niza_ispis) { //dok nije ispisan posljednji karakter salji slovo po slovo 
-			send_serial_character(COM_CH2, r[t_point++]);
+			if (send_serial_character(COM_CH2, r[t_point++]) != 0) {
+				printf("Slanje karaktera neispravno\n");
+			}
 			
 
 		}
@@ -286,7 +288,9 @@ static void Primio_kanal_0(const void* pvParameters) //prijem sa kanala 0 (senzo
 		}
 
 		// uzima semafor
-		get_serial_character(COM_CH, &cc);
+		if (get_serial_character(COM_CH, &cc) != 0) {
+			printf("Greska\n");
+		}
 
 			
 		
@@ -304,7 +308,7 @@ static void Primio_kanal_0(const void* pvParameters) //prijem sa kanala 0 (senzo
 			kalibracija1_local = (double)100 * (senzor1 - min) / (max - min);  // racunamo kalibraciju, i smestamo je u promenljivu kalibracija1
 			if (xQueueSend(queue_kalibracija1, &kalibracija1_local, 0U) != pdTRUE) {
 				printf("8\n");
-			}// bla
+			}
 
 			// vrednost kalibracije 1 saljemo u queue_kalibracija1, ovaj queue kasnije receivujemo u Serijska_stanje_task da bi mogli na serijskoj da ispisujemo na serijskoj trenutno stanje kalibracije1
 			if (xQueueSend(queue_kalibracija3, &kalibracija1_local, 0U) != pdTRUE) {
@@ -336,11 +340,13 @@ static void Primio_kanal_1(const void* pvParameters) //POTUPNO IDENTICNA PRICA K
 		}
 
 
-		get_serial_character(COM_CH1, &cc);
+		if (get_serial_character(COM_CH1, &cc) != 0) {
+			printf("Greska\n");
+		}
 		
 
 
-		if (cc == 0x0d) {
+		if (cc == (uint8_t)0x0d) {
 			senzor2 = atof(rastojanje_kanal1);
 			if (xQueueSend(queue_senzor2, &senzor2, 0U) != pdTRUE) {
 				printf("11\n");
@@ -382,7 +388,9 @@ static void SerialReceive_Task(void* pvParameters) //kanal 2, prima komandnu rij
 
 		// ceka na serijski prijemni interapt
 
-		get_serial_character(COM_CH2, &cc);
+		if (get_serial_character(COM_CH2, &cc) != 0) {
+			printf("Greska\n");
+		}
 		
 
 		//ucitava primljeni karakter u promenjivu cc        
