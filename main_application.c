@@ -304,7 +304,7 @@ static void Primio_kanal_0(const void* pvParameters) //prijem sa kanala 0 (senzo
 			kalibracija1_local = (double)100 * (senzor1 - min) / (max - min);  // racunamo kalibraciju, i smestamo je u promenljivu kalibracija1
 			if (xQueueSend(queue_kalibracija1, &kalibracija1_local, 0U) != pdTRUE) {
 				printf("8\n");
-			}
+			}// bla
 
 			// vrednost kalibracije 1 saljemo u queue_kalibracija1, ovaj queue kasnije receivujemo u Serijska_stanje_task da bi mogli na serijskoj da ispisujemo na serijskoj trenutno stanje kalibracije1
 			if (xQueueSend(queue_kalibracija3, &kalibracija1_local, 0U) != pdTRUE) {
