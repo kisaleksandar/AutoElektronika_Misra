@@ -38,8 +38,8 @@ static void Seg7_ispis_task(void* pvParameters); //ispisivanje trazenih informac
 static void Serijska_stanje_task(void* pvParameters); //redovni ispis stanja sistema na serijsku (rezim rada, ukljuceno\iskljuceno, temperatura)
 void main_demo(void);
 /* TIMER FUNCTIONS*/
-static void ispis_tajmer_callback(TimerHandle_t ispis_tajmer_callback); 
-static void TimerCallback(TimerHandle_t TimerCallback);
+static void ispis_tajmer_callback(TimerHandle_t Tmh); 
+static void TimerCallback(TimerHandle_t Tmh2);
 
 /* Globalne promjenljive za generalnu upotrebu */
 #define R_BUF_SIZE (32)
@@ -751,7 +751,7 @@ static uint32_t prvProcessRXCInterrupt(void)
 
 
 /* PERIODIC TIMER CALLBACK */
-static void TimerCallback(TimerHandle_t TimerCallback)
+static void TimerCallback(TimerHandle_t per_TimerHandle)
 {
 
 	if (xSemaphoreGive(seg7_ispis) != pdTRUE) {
