@@ -446,17 +446,17 @@ static void SerialReceive_Task(void* pvParameters) //kanal 2, prima komandnu rij
 
 		}
 
-		if (xQueueSend(stanje_sistema, &start_local, 0U) != pdTRUE) {
-			printf("18\n");
-		}
+if (xQueueSend(stanje_sistema, &start_local, 0U) != pdTRUE) {
+	printf("18\n");
+}
 
-		// saljemo u queue stanje_sistema koja je komanda aktivirana, ovaj queue sluzi za task Serijska_stanje_task
-		if (xQueueSend(seg7_auto_queue, &start_local, 0U) != pdTRUE) {
-			printf("19\n");
-		}
+// saljemo u queue stanje_sistema koja je komanda aktivirana, ovaj queue sluzi za task Serijska_stanje_task
+if (xQueueSend(seg7_auto_queue, &start_local, 0U) != pdTRUE) {
+	printf("19\n");
+}
 
-		// saljemo u queue seg7_auto_queue koja je komanda aktivirana, ovaj queue sluzi za Seg7_ispis(nisam siguran da je to bas ime taska)
-		//razlog zasto imam dva reda, za istu stvar, je sinhronizacija izmedju taskova koja se poremeti ako koristim isti queue.
+// saljemo u queue seg7_auto_queue koja je komanda aktivirana, ovaj queue sluzi za Seg7_ispis(nisam siguran da je to bas ime taska)
+//razlog zasto imam dva reda, za istu stvar, je sinhronizacija izmedju taskova koja se poremeti ako koristim isti queue.
 	}
 }
 
@@ -467,7 +467,7 @@ static void Seg7_ispis_task(void* pvParameters) { // TASK ZA ISPIS NA SEG7 DISPL
 											// SLEDECA TRI SEGMENTA, ISPISUJEMO VREDNOST SA SENZORA 1(NEKALIBRISANU)
 											// SLEDECA TRI SEGMENTA, ISPISUJEMO VREDNOST SA SENZORA 2
 
-	uint16_t senzor1_local = 0, senzor2_local = 0;  // promenljive za smestanje vrednost sa senzora
+	double senzor1_local = 0, senzor2_local = 0;  // promenljive za smestanje vrednost sa senzora
 	uint8_t start_local = 0; // promeljiva za smestanje vrednosti start/stop
 
 	for (;;) {
@@ -482,48 +482,118 @@ static void Seg7_ispis_task(void* pvParameters) { // TASK ZA ISPIS NA SEG7 DISPL
 
 		// start/stop komanda se risivuje 
 		xQueueReceive(queue_senzor1, &senzor1_local, pdMS_TO_TICKS(20));
-		
+
 
 		// vrednost sa senzora 1 se risivuje
 		xQueueReceive(queue_senzor2, &senzor2_local, pdMS_TO_TICKS(20));
-		
+
 
 		// vrednost sa senzora 2 se risivuje
 
 		if (start_local == (uint8_t)1) { //na prvu cifru ispisuje 1 ako je rezim rada start, a 0 ako je stop
-			select_7seg_digit(0);
-			set_7seg_digit(hexnum[1]);
+			if (select_7seg_digit(0) != 0) {
+				printf("Problem\n");
+			}
+			if (set_7seg_digit(hexnum[1]) != 0) {
+				printf("Problem\n");
+			}
 
-			//ispis vrednosti senzora
-			select_7seg_digit(1); //
-			set_7seg_digit(hexnum[senzor1_local / 100]); // JEDINICA
-			select_7seg_digit(2);
-			set_7seg_digit(hexnum[(senzor1_local / 10) % 10]); // DESETICA
-			select_7seg_digit(3); //
-			set_7seg_digit(hexnum[senzor1_local % 10]); // STOTINA
-			select_7seg_digit(4);
-			set_7seg_digit(hexnum[senzor2_local / 100]); // JEDINICA
-			select_7seg_digit(5);
-			set_7seg_digit(hexnum[(senzor2_local / 10) % 10]); //DESETICA
-			select_7seg_digit(6);
-			set_7seg_digit(hexnum[senzor2_local % 10]); // STOTINA
+			if (select_7seg_digit(1) != 0) {
+			printf("Problem\n");
+			}
+
+			if (set_7seg_digit(hexnum[(uint8_t)senzor1_local / 100]) != 0) {
+			printf("Problem\n");
+			}
+			if (select_7seg_digit(2) != 0) {
+			printf("Problem\n");
+			}
+			if (set_7seg_digit(hexnum[((uint8_t)senzor1_local / 10) % 10]) != 0) {
+			printf("Problem\n");
+			}
+			if (select_7seg_digit(3) != 0) {
+			printf("Problem\n");
+			}
+			if (set_7seg_digit(hexnum[(uint8_t)senzor1_local % 10]) != 0) {
+			printf("Problem\n");
+			}
+			if (select_7seg_digit(4) != 0) {
+				printf("Problem\n");
+			}
+			if (set_7seg_digit(hexnum[(uint8_t)senzor2_local / 100]) != 0) {
+			printf("Problem\n");
+			}
+			if (select_7seg_digit(5) != 0) {
+				printf("Problem\n");
+			}
+			if (set_7seg_digit(hexnum[((uint8_t)senzor2_local / 10) % 10]) != 0) {
+				printf("Problem\n");
+			}
+			if (select_7seg_digit(6) != 0) {
+				printf("Problem\n");
+			}
+			if (set_7seg_digit(hexnum[(uint8_t)senzor2_local % 10]) != 0) {
+			printf("Problem\n");
+			}
+
 		}
 
 		else {
-			select_7seg_digit(0);
-			set_7seg_digit(hexnum[0]);
-			select_7seg_digit(1); //
-			set_7seg_digit(hexnum[0]); // JEDINICA
-			select_7seg_digit(2);
-			set_7seg_digit(hexnum[0]);// DESETICA
-			select_7seg_digit(3); //
-			set_7seg_digit(hexnum[0]); // STOTINA
-			select_7seg_digit(4);
-			set_7seg_digit(hexnum[0]); // JEDINICA
-			select_7seg_digit(5);
-			set_7seg_digit(hexnum[0]); //DESETICA
-			select_7seg_digit(6);
-			set_7seg_digit(hexnum[0]); // STOTINA
+			if (select_7seg_digit(0) != 0) {
+				printf("Problem\n");
+			}
+
+			if (set_7seg_digit(hexnum[0]) != 0){
+			printf("Problem\n");
+			}
+			if (select_7seg_digit(1) != 0){
+				printf("Problem\n");
+			}
+			if (set_7seg_digit(hexnum[0]) != 0) {
+				printf("Problem\n");
+			}
+
+			if (select_7seg_digit(2) != 0) {
+			printf("Problem\n");
+			}
+
+			if (set_7seg_digit(hexnum[0]) != 0) {
+			printf("Problem\n");
+			}
+
+			if (select_7seg_digit(3) != 0) {
+			printf("Problem\n");
+			}
+
+			if (set_7seg_digit(hexnum[0]) != 0) {
+			printf("Problem\n");
+			}
+
+			if (select_7seg_digit(4) != 0) {
+			printf("Problem\n");
+			}
+
+			if (set_7seg_digit(hexnum[0]) != 0) {
+			printf("Problem\n");
+			}
+
+			if (select_7seg_digit(5) != 0) {
+			printf("Problem\n");
+			}
+
+			if (set_7seg_digit(hexnum[0]) != 0) {
+			printf("Problem\n");
+			}
+
+			if (select_7seg_digit(6) != 0) {
+			printf("Problem\n");
+			}
+
+			if (set_7seg_digit(hexnum[0]) != 0) {
+			printf("Problem\n");
+			}
+			
+			
 		}
 
 	}
