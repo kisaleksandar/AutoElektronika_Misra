@@ -627,15 +627,20 @@ static void Serijska_stanje_task(void* pvParameters) { /*formiramo niz za redova
 
 		// UZIMA SEMAFOR SVAKIH 5 SEKUNDI 
 
-		xQueueReceive(queue_kalibracija1, &kalibracija1_local, pdMS_TO_TICKS(20));
+		if (xQueueReceive(queue_kalibracija1, &kalibracija1_local, pdMS_TO_TICKS(20)) != pdTRUE) {
+			printf("kali1\n");
+		}
 	
 		// RISIVUJE VREDNOST KALIBRACIJE 1
-		xQueueReceive(queue_kalibracija2, &kalibracija2_local, pdMS_TO_TICKS(20));
+		if (xQueueReceive(queue_kalibracija2, &kalibracija2_local, pdMS_TO_TICKS(20)) != pdTRUE) {
+			printf("kali2\n");
+		}
 		
 
 		// RISIVUJE VREDNOST KALIBRACIJE 2
-		xQueueReceive(stanje_sistema, &start_local, pdMS_TO_TICKS(20)); // RISIVUJE KOMANDU START/STOP
-		
+		if (xQueueReceive(stanje_sistema, &start_local, pdMS_TO_TICKS(20)) != pdTRUE) { // RISIVUJE KOMANDU START/STOP
+			printf("stanje\n");
+		}
 		strcpy(pomocni_niz, "Stanje: "); // PRVO U NIZ pomocni_niz SMESTAMO(KOPIRAMO) "Stanje:" 
 		duzina_niza_ispis = (uint8_t)sizeof("Stanje: ") - (uint8_t)1; // OVDE U PROMENLJIVU DUZINA_NIZA_ISPIS SMESTAMO KOLIKO JE TRENUTNO DUGACAK NIZ POMOCNI_NIZ
 
