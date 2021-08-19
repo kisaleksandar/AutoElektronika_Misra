@@ -641,7 +641,7 @@ static void Serijska_stanje_task(void* pvParameters) { /*formiramo niz za redova
 		if (xQueueReceive(stanje_sistema, &start_local, pdMS_TO_TICKS(20)) != pdTRUE) { // RISIVUJE KOMANDU START/STOP
 			printf("stanje\n");
 		}
-		strcpy(pomocni_niz, "Stanje: "); // PRVO U NIZ pomocni_niz SMESTAMO(KOPIRAMO) "Stanje:" 
+		strcpy(pomocni_niz,"Stanje: "); // PRVO U NIZ pomocni_niz SMESTAMO(KOPIRAMO) "Stanje:" 
 		duzina_niza_ispis = (uint8_t)sizeof("Stanje: ") - (uint8_t)1; // OVDE U PROMENLJIVU DUZINA_NIZA_ISPIS SMESTAMO KOLIKO JE TRENUTNO DUGACAK NIZ POMOCNI_NIZ
 
 		if (start_local == (uint8_t)1) { //AKO JE AKTIVAN START NA Stanje: nadovezi START
@@ -841,7 +841,7 @@ void main_demo(void)
 	/* create a timer task */
 	per_TimerHandle = xTimerCreate("Timer", pdMS_TO_TICKS(80), pdTRUE, NULL, TimerCallback);
 
-	if (per_TimerHandle != pdPASS) {
+	if (per_TimerHandle == NULL) {
 		printf("Greska prilikom kreiranja\n");
 	}
 	if (xTimerStart(per_TimerHandle, 0) != pdPASS) {
@@ -852,7 +852,7 @@ void main_demo(void)
 	
 	ispis_podaci_tajmer = xTimerCreate("Timer2", pdMS_TO_TICKS(5000), pdTRUE, NULL, ispis_tajmer_callback);
 
-	if (ispis_podaci_tajmer != pdPASS) {
+	if (ispis_podaci_tajmer == NULL) {
 		printf("Greska prilikom kreiranja\n");
 	}
 	if (xTimerStart(ispis_podaci_tajmer, 0) != pdPASS) {
