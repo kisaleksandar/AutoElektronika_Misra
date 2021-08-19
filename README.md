@@ -120,6 +120,24 @@ Proveravamo da li je start na 1, tj. da li je sistem aktivan. Ako jeste na prvu 
 
 -Takodje ovaj task tejkuje semafor serijska_stanje svakih 5s. To je namesteno preko tajmer_callback funkcije koja givuje taj semafor ovom tasku na svakih 5s.
 
+# MISRA
 
+Misra pravila koja nisu ispoštovana:
+
+1.3 i 8.4 - ispoštovano za sve osim za promenljive uz atof i one koje su char[], na primjer pri ispisivanju START, jer nismo uspeli namestiti da te promenljive budu istog tipa
+10.4 - isti razlog kao i pravila iznad
+11.1 - prilikom kreiranja taska se javlja kršenje ovog pravila, nije nam jasno zbog čega
+11.2 - pravilo koje ste rekli da zakomentarišemo
+10.3 - koristimo double
+15.7 - nakon else if nema else 
+10.1 - koristimo && < <= 
+6.1 - nema veze sa main_application, ali se pojavljuje često, pa je zakomentarisano
+11.2 - javlja se kao greska prilikom uzimanja semafora, nije nam jasno zbog čega
+18.1 - greška prilikom korišćenja []
+21.6 - koristimo printf
+21.7 - koristimo atof
+11.6
+
+Takodje su zakomentarisana odredjena advisory pravila (8.13, 4.8, 4.6, 13.3, 12.1, 8.9, 2.7, 5.9).
 
 
