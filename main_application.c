@@ -35,7 +35,7 @@ static void SerialReceive_Task(void* pvParameters); //prijem komandi sa serijske
 static void Primio_kanal_0(const void* pvParameters); //prijem sa senzora 1
 static void Primio_kanal_1(const void* pvParameters); //prijem sa senzora 2 
 static void Seg7_ispis_task(void* pvParameters); //ispisivanje trazenih informacija na 7-segmentni displej
-static void Serijska_stanje_task(void* pvParameters); //redovni ispis stanja sistema na serijsku (rezim rada, ukljuceno\iskljuceno, temperatura)
+static void Serijska_stanje_task(void* pvParameters); //redovni ispis stanja sistema na serijsku 
 void main_demo(void);
 /* TIMER FUNCTIONS*/
 static void ispis_tajmer_callback(TimerHandle_t Tmh); 
@@ -127,21 +127,21 @@ static void SerialSend_Task(const void* pvParameters)
 
 	for (;;)
 	{
-		if (xSemaphoreTake(TBE_BS_2, portMAX_DELAY) != pdTRUE) {
+		if (xSemaphoreTake(TBE_BS_2, portMAX_DELAY) != pdTRUE) {   
 			printf("1\n");
 		}
-
-		// sacekaj da TX registar bude prazan 
+		// sacekaj da TX registar bude prazan
+ 
 		if (xQueueReceive(serijska_ispis_queue, &r, pdMS_TO_TICKS(20)) != pdTRUE) {
 			printf("2\n");
 		}
 
-		//pogledaj da li ima novih vrijednosti (ako nema za 10ms radi dalje)
+		//pogledaj da li ima novih vrijednosti (ako nema za 20ms radi dalje)
 		if (xQueueReceive(serijska_ispis_duzina, &duzina_niza_ispis, pdMS_TO_TICKS(20)) != pdTRUE) {
 			printf("3\n");
 		}
 
-		//pogledaj ima li sta novo (ako nema za 10ms radi dalje)
+		//pogledaj ima li sta novo (ako nema za 20ms radi dalje)
 
 		if (t_point < duzina_niza_ispis) { //dok nije ispisan posljednji karakter salji slovo po slovo 
 			if (send_serial_character(COM_CH2, r[t_point++]) != 0) {
@@ -165,8 +165,9 @@ static void LED_bar_Task1(const void* pvParameters) {
 						 // da nam se na pocetku to ispise samo jednom na terminalu, a ne nonstop da se ispisuje
 	for (;;) {
 
-		xQueueReceive(queue_kalibracija3, &kalibracija3_local, pdMS_TO_TICKS(20)); // smestanje kalibrasane vrednosti sa senzora 1 
-		
+		if (xQueueReceive(queue_kalibracija3, &kalibracija3_local, pdMS_TO_TICKS(20)) != 0) { // smestanje kalibrasane vrednosti sa senzora 1 
+			printf("kali3\n");
+		}
 
 		if (kalibracija3_local > (double)50 && kalibracija3_local <= (double)100) {
 			printf("LEVI SENZOR: DALEKA DETEKCIJA\n");// Generisemo signal frekvencije 1Hz, polovinu periode ce svetleti gornje
@@ -221,7 +222,10 @@ static void LED_bar_Task2(const void* pvParameters) {
 						 // da nam se na pocetku to ispise samo jednom na terminalu, a ne nonstop da se ispisuje
 
 	for (;;) {
-		xQueueReceive(queue_kalibracija4, &kalibracija4_local, pdMS_TO_TICKS(20));
+		if (xQueueReceive(queue_kalibracija4, &kalibracija4_local, pdMS_TO_TICKS(20)) != 0) {
+			printf("kali4\n");
+		}
+		
 		
 
 
@@ -345,7 +349,7 @@ static void Primio_kanal_1(const void* pvParameters) //POTUPNO IDENTICNA PRICA K
 		}
 		
 
-
+		
 		if (cc == (uint8_t)0x0d) {
 			senzor2 = atof(rastojanje_kanal1);
 			if (xQueueSend(queue_senzor2, &senzor2, 0U) != pdTRUE) {
@@ -401,7 +405,7 @@ static void SerialReceive_Task(void* pvParameters) //kanal 2, prima komandnu rij
 
 		// ovo nam treba zbog START/STOP
 
-		start_local = startovanje; // realno glupsot, al kao da bolje radi vako
+		start_local = startovanje;
 
 		if (cc == (uint8_t)0x0d) // oznaciti kraj poruke i ako je kraj, preko reda poslati informacije o poruci i restartovati ovaj taks
 		{
