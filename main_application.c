@@ -38,8 +38,8 @@ static void Seg7_ispis_task(void* pvParameters); //ispisivanje trazenih informac
 static void Serijska_stanje_task(void* pvParameters); //redovni ispis stanja sistema na serijsku 
 void main_demo(void);
 /* TIMER FUNCTIONS*/
-static void ispis_tajmer_callback(TimerHandle_t Tmh); 
-static void TimerCallback(TimerHandle_t Tmh2);
+static void ispis_tajmer_callback(TimerHandle_t ispis_podaci_tajmer);
+static void TimerCallback(TimerHandle_t per_TimerHandle);
 
 /* Globalne promjenljive za generalnu upotrebu */
 #define R_BUF_SIZE (32)
@@ -57,8 +57,8 @@ static SemaphoreHandle_t RXC_BS_0, RXC_BS_1, RXC_BS_2;
 static SemaphoreHandle_t seg7_ispis;
 static SemaphoreHandle_t serijska_stanje; 
 
-static TimerHandle_t per_TimerHandle;
-static TimerHandle_t ispis_podaci_tajmer;
+static TimerHandle_t per_TimerHandle1;
+static TimerHandle_t ispis_podaci_tajmer1;
 
 
 static QueueHandle_t seg7_auto_queue;
@@ -762,7 +762,23 @@ static uint32_t prvProcessRXCInterrupt(void)
 /* PERIODIC TIMER CALLBACK */
 static void TimerCallback(TimerHandle_t per_TimerHandle)
 {
+	uint32_t timer_id;
+	timer_id = (uint32_t)pvTimerGetTimerID(per_TimerHandle);
 
+	if (timer_id == (uint32_t)1) {
+		if (xTimerIsTimerActive(per_TimerHandle1) != pdFALSE) {
+			if (xTimerStop(per_TimerHandle1, 0) != pdPASS) {
+				printf("Ne\n");
+			}
+			return;
+		}
+		else {
+			if (xTimerStart(per_TimerHandle1, 0) != pdPASS) {
+				printf("Ne\n");
+			}
+			return;
+		}
+	}
 	if (xSemaphoreGive(seg7_ispis) != pdTRUE) {
 		printf("30\n");
 	}
@@ -774,7 +790,23 @@ static void TimerCallback(TimerHandle_t per_TimerHandle)
 
 static void ispis_tajmer_callback(TimerHandle_t ispis_podaci_tajmer)
 {
+	uint32_t timer_id1;
+	timer_id1 = (uint32_t)pvTimerGetTimerID(ispis_podaci_tajmer1);
 
+	if (timer_id1 == (uint32_t)1) {
+		if (xTimerIsTimerActive(ispis_podaci_tajmer1) != pdFALSE) {
+			if (xTimerStop(ispis_podaci_tajmer1, 0) != pdPASS) {
+				printf("Ne\n");
+			}
+			return;
+		}
+		else {
+			if (xTimerStart(ispis_podaci_tajmer1, 0) != pdPASS) {
+				printf("Ne\n");
+			}
+			return;
+		}
+	}
 	if (xSemaphoreGive(serijska_stanje) != pdTRUE) {
 		printf("31\n");
 	}
@@ -782,6 +814,7 @@ static void ispis_tajmer_callback(TimerHandle_t ispis_podaci_tajmer)
 	    // ispis na terminalu kanala 2 svakih 5000ms
 
 }
+
 
 /* MAIN - SYSTEM STARTUP POINT */
 void main_demo(void)
@@ -839,23 +872,23 @@ void main_demo(void)
 	
 
 	/* create a timer task */
-	per_TimerHandle = xTimerCreate("Timer", pdMS_TO_TICKS(80), pdTRUE, NULL, TimerCallback);
+	per_TimerHandle1 = xTimerCreate("Timer", pdMS_TO_TICKS(80), pdTRUE, NULL, TimerCallback);
+	
+	if (per_TimerHandle1 == NULL) {
+		printf("Greska prilikom kreiranja\n");
+	}
+	if (xTimerStart(per_TimerHandle1, 0) != pdPASS) {
+		printf("Greska prilikom kreiranja\n");
+	}
+	
+	
+	
+	ispis_podaci_tajmer1 = xTimerCreate("Timer2", pdMS_TO_TICKS(5000), pdTRUE, NULL, ispis_tajmer_callback);
 
-	if (per_TimerHandle == NULL) {
+	if (ispis_podaci_tajmer1 == NULL) {
 		printf("Greska prilikom kreiranja\n");
 	}
-	if (xTimerStart(per_TimerHandle, 0) != pdPASS) {
-		printf("Greska prilikom kreiranja\n");
-	}
-	
-	
-	
-	ispis_podaci_tajmer = xTimerCreate("Timer2", pdMS_TO_TICKS(5000), pdTRUE, NULL, ispis_tajmer_callback);
-
-	if (ispis_podaci_tajmer == NULL) {
-		printf("Greska prilikom kreiranja\n");
-	}
-	if (xTimerStart(ispis_podaci_tajmer, 0) != pdPASS) {
+	if (xTimerStart(ispis_podaci_tajmer1, 0) != pdPASS) {
 		printf("Greska prilikom kreiranja\n");
 	}
 	
