@@ -840,22 +840,38 @@ void main_demo(void)
 
 	/* create a timer task */
 	per_TimerHandle = xTimerCreate("Timer", pdMS_TO_TICKS(80), pdTRUE, NULL, TimerCallback);
-	xTimerStart(per_TimerHandle, 0);
-	if (per_TimerHandle == NULL) {
+
+	if (per_TimerHandle != pdPASS) {
 		printf("Greska prilikom kreiranja\n");
 	}
+	if (xTimerStart(per_TimerHandle, 0) != pdPASS) {
+		printf("Greska prilikom kreiranja\n");
+	}
+	
+	
+	
 	ispis_podaci_tajmer = xTimerCreate("Timer2", pdMS_TO_TICKS(5000), pdTRUE, NULL, ispis_tajmer_callback);
-	xTimerStart(ispis_podaci_tajmer, 0);
-	if (ispis_podaci_tajmer == NULL) {
+
+	if (ispis_podaci_tajmer != pdPASS) {
 		printf("Greska prilikom kreiranja\n");
 	}
-
+	if (xTimerStart(ispis_podaci_tajmer, 0) != pdPASS) {
+		printf("Greska prilikom kreiranja\n");
+	}
+	
+	
 	/* SERIAL TRANSMITTER TASK */
-	xTaskCreate(SerialSend_Task, "STx", configMINIMAL_STACK_SIZE, NULL, TASK_SERIAL_SEND_PRI, NULL);
-
+	BaseType_t status1;
+	status1 = xTaskCreate(SerialSend_Task, "STx", configMINIMAL_STACK_SIZE, NULL, TASK_SERIAL_SEND_PRI, NULL);
+	if (status1 != pdPASS) {
+		printf("Greska prilikom kreiranja\n");
+	}
 	/* SERIAL RECEIVER TASK */
-	xTaskCreate(SerialReceive_Task, "SRx", configMINIMAL_STACK_SIZE, NULL, TASK_SERIAl_REC_PRI, NULL);
-
+	BaseType_t status2;
+	status2 = xTaskCreate(SerialReceive_Task, "SRx", configMINIMAL_STACK_SIZE, NULL, TASK_SERIAl_REC_PRI, NULL);
+	if (status2 != pdPASS) {
+		printf("Greska prilikom kreiranja");
+	}
 	/* Create TBE semaphore - serial transmit comm */
 	TBE_BS_0 = xSemaphoreCreateBinary();
 	if (TBE_BS_0 == NULL)
