@@ -6,9 +6,13 @@
 -Kalibrisati obe vrednosti senzora
 
 -Na osnovu kalibrisanih vrednosti genesirati signale:
-    Ako je kalibracija izmedju 50% i 100%: neka blinkaju diode frekvencijom 1Hz - takodje ispisvati na terminalu _DETEKCIJA
+
+    Ako je kalibracija izmedju 50% i 100%: neka blinkaju diode frekvencijom 1Hz - takodje ispisvati na terminalu DALEKA_DETEKCIJA
+    
     Ako je kalibracija izmedju 0% i 50%: neka blinkaciju diode frekvencijom 2Hz - BLISKA DETEKCIJA
+    
     Ako je kalibracija manja od 0: neka diode svetle periodom 0.5s - KONTAKT DETEKCIJA
+    
     OVO ODRADITI ZA OBA SENZORA ZASEBNO
     
 -Napraviti start/stop sistem, gde se sistem moze paliti prekidacem, gasiti porukom STOP, ili paliti porukom START, gasiti prekidacem itd.
